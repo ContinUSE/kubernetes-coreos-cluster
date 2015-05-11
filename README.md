@@ -15,13 +15,21 @@ Master Cluster has only one node as master-01, and Worker Cluster has two nodes 
 ```
 $ ls
 continuse      master      worker
+```
+
+Modify in master/Vagrantfile and worker/Vagrantfile for NFS directory (ex: Local directory path is ~/kubernetes-cluster/continuse)
+```
+config.vm.synced_folder "~/kubernetes-cluster/continuse", "/continuse", id: "root", :nfs => true, :mount_options =>  ["nolock,vers=3,udp"], :map_uid => 0, :map_gid => 0
+```
+
+### Master / Worker Cluster Building
+```
 $ cd master
 $ vagrant up
+............
 ...........
-
-$ cd ../worker
+$ cd worker
 $ vagrant up
-.........
 ```
 
 ### Master Cluster login & Kubernetes Binary file copy
