@@ -1,0 +1,19 @@
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/continuse/bin/kube-apiserver  \
+--address=0.0.0.0  \
+--port=8080  \
+--portal_net=10.244.0.0/16  \
+--etcd_servers=http://127.0.0.1:4001  \
+--public_address_override=${COREOS_PUBLIC_IPV4}  \
+--cors_allowed_origins=.*  \
+--logtostderr=true
+Restart=always
+RestartSec=10
+
+[X-Fleet]
+MachineMetadata=role=master
