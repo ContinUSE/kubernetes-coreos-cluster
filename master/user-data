@@ -1,0 +1,52 @@
+#cloud-config
+
+coreos:
+  update:
+    reboot-strategy: off
+  etcd2:
+    #generate a new token for each unique cluster from https://discovery.etcd.io/new
+    #discovery: https://discovery.etcd.io/<token>
+    name: master-01
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    advertise-client-urls: http://$public_ipv4:2379,http://$public_ipv4:4001
+    initial-cluster-token: k8s_etcd
+    listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
+    initial-advertise-peer-urls: http://$private_ipv4:2380
+    initial-cluster: master-01=http://$private_ipv4:2380
+    initial-cluster-state: new
+  fleet:
+    public-ip: $public_ipv4
+    metadata: role=master
+  flannel:
+    interface: $public_ipv4
+  units:
+    - name: flanneld.service
+      command: start
+      drop-ins:
+        - name: 50-network-config.conf
+          content: |
+            [Unit]
+            Requires=etcd2.service
+            [Service]
+            ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{"Network": "10.244.0.0/16", "Backend": {"Type": "vxlan"}}'
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: docker.service
+      command: start
+      drop-ins:
+        - name: 50-insecure-registry.conf
+          content: |
+            [Unit]
+            Requires=flanneld.service
+            After=flanneld.service
+            [Service]
+            Environment=DOCKER_OPTS='--insecure-registry="0.0.0.0/0"'
+
+write_files:
+ - path: /home/core/.bash_profile
+   permissions: '0644'
+   content: |
+      #!/bin/bash
+      export PATH=$PATH:/continuse/bin
