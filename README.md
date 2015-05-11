@@ -24,13 +24,33 @@ $ vagrant up
 .........
 ```
 
-### Master CLuster login & Service Start
+### Master Cluster login & Kubernetes Binary file copy
 ```
 $ cd master
 $ vagrant ssh master-01
 
 On master-01
-$ cd /continuse
+$ cd /continuse/bin
+$ wget https://github.com/ContinUSE/kubernetes-coreos-cluster/releases/download/v0.16.0/kube.v0.16.0.tgz
+$ tar xvfz kube.v0.16.0.tgz
+```
+
+### Kubernetes Service Start
+```
+$ cd /continuse/service
+$ fleetctl start kube-apiserver.service
+$ fleetctl start kube-controller-manager.service
+$ fleetctl start kube-register.service
+$ fleetctl start kube-register.service
+$ fleetctl start kube-scheduler.service
+$ fleetctl start kube-kubelet.service
+$ fleetctl start kube-proxy.service
+```
+
+### Make a Label
+```
+$ kubectl label nodes 172.17.8.111 node=test1
+$ kubectl label nodes 172.17.8.112 node=test2
 ```
 
 **KUBERNETES_VERSION** v0.16.0
