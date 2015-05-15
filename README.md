@@ -49,7 +49,6 @@ $ cd /continuse/service
 $ fleetctl start kube-apiserver.service
 $ fleetctl start kube-controller-manager.service
 $ fleetctl start kube-register.service
-$ fleetctl start kube-register.service
 $ fleetctl start kube-scheduler.service
 $ fleetctl start kube-kubelet.service
 $ fleetctl start kube-proxy.service
@@ -59,6 +58,22 @@ $ fleetctl start kube-proxy.service
 ```
 $ kubectl label nodes 172.17.8.111 node=test1
 $ kubectl label nodes 172.17.8.112 node=test2
+```
+
+### Kubernetes Service for GUI Interface
+```
+$ fleetctl start fleet-ui.service
+$ fleetctl start kubernetes-ui.service
+```
+
+#### cAdvisor -- Web-based monitoring
+```
+http://172.17.8.111:4194/containers/
+```
+
+### Kubernetes UI -- Web-based
+```
+http://172.17.8.101:8001/#/dashboard/
 ```
 
 **KUBERNETES_VERSION** v0.16.0
