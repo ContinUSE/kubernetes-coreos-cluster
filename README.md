@@ -7,79 +7,81 @@ cluster setup with [Vagrant](https://www.vagrantup.com) and
 
 * [Vagrant](https://www.vagrantup.com)
 * [Virtualbox](https://www.virtualbox.org)
+* For more information about virtualbox setup, see the test environments section in https://github.com/ContinUSE/openstack-on-coreos
 
-## Master and Worker Cluster Setup 
+## Controller and Kube Cluster Setup 
 
 ### Download Scripts
-Master Cluster has only one node as master-01, and Worker Cluster has two nodes as node-01, node-02
+Controller Cluster has 3 nodes as controller-01/controller-02/controller-03, and Kube Cluster has 3 nodes as kube-01-01, kube-02, kube-03.
 ```
 $ ls
-continuse      master      worker
+README.md*	continuse/	controller/	examples/	kube/
 ```
 
-Modify in master/Vagrantfile and worker/Vagrantfile for NFS directory (ex: Local directory path is ~/kubernetes-cluster/continuse)
+Modify in controller/Vagrantfile and kube/Vagrantfile for NFS directory (ex: Local directory path is ~/kubernetes-cluster/continuse)
 ```
 config.vm.synced_folder "~/kubernetes-cluster/continuse", "/continuse", id: "root", :nfs => true, :mount_options =>  ["nolock,vers=3,udp"], :map_uid => 0, :map_gid => 0
 ```
 
-### Master / Worker Cluster Building
+### Controller / Kube Cluster Building
 ```
-$ cd master
+$ cd controller
 $ vagrant up
 ............
 ...........
-$ cd worker
+$ cd kube
 $ vagrant up
 ```
 
-### Master Cluster login & Kubernetes Binary file copy
+### Controller Cluster login & Kubernetes Binary file copy
 ```
-$ cd master
-$ vagrant ssh master-01
+$ cd controller
+$ vagrant ssh controller-01
 
-On master-01
-$ cd /continuse/bin
-$ wget https://github.com/ContinUSE/kubernetes-coreos-cluster/releases/download/v0.16.0/kube.v0.16.0.tgz
-$ tar xvfz kube.v0.16.0.tgz
+On controller-01
+$ cd /continuse/kube/bin
+$ wget https://github.com/ContinUSE/kubernetes-coreos-cluster/releases/download/v1.0.1/kube_1.0.1.tar
+$ tar xvfz kube_1.0.1.tar
+```
+
+### Make Service Account Key file
+```
+On controller-01
+$ cd /continuse/kube/bin
+$ openssl genrsa -out kube-serviceaccount.key 2048
 ```
 
 ### Kubernetes Service Start
 ```
-$ cd /continuse/service
+$ cd /continuse/kube/service
 $ fleetctl start kube-apiserver.service
 $ fleetctl start kube-controller-manager.service
-$ fleetctl start kube-register.service
 $ fleetctl start kube-scheduler.service
 $ fleetctl start kube-kubelet.service
 $ fleetctl start kube-proxy.service
 ```
 
-### Make a Label
-```
-$ kubectl label nodes 172.17.8.111 node=test1
-$ kubectl label nodes 172.17.8.112 node=test2
-```
-
 ### Kubernetes Service for GUI Interface
 ```
-$ fleetctl start fleet-ui.service
-$ fleetctl start kubernetes-ui.service
-```
-
-#### cAdvisor -- Web-based monitoring
-```
-http://172.17.8.111:4194/containers/
+$ kubectl create -f kube-ui-rc.yaml --namespace=kube-system
+$ kubectl create -f kube-ui-svc.yaml --namespace=kube-system
 ```
 
 ### Kubernetes UI -- Web-based
 ```
-http://172.17.8.101:8001/#/dashboard/
+http://192.168.10.12:8080/ui/           IP address of Kubernetes API Server Running
 ```
 
-**KUBERNETES_VERSION** v0.16.0
+#### cAdvisor -- Web-based monitoring
+```
+http://192.168.10.71:4194/containers/    Each Kube Cluster node
+```
+
+**KUBERNETES_VERSION** v1..0.1
 
 ### Usage
 
-If you want to test something exsamples, start with [Kubernetes examples]
+If you want to test something examples, start with [Kubernetes examples]
 (https://github.com/GoogleCloudPlatform/kubernetes/blob/master/examples/).
+And I am trying yo make examples. See with [My Examples] (https://github.com/ContinUSE/kubernetes-coreos-cluster/examples).
 
