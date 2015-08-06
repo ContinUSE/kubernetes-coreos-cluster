@@ -72,9 +72,4 @@ write_files:
    permissions: '0644'
    content: |
       #!/bin/bash
-      export PATH=$PATH:/opt/bin:/continuse/bin:/continuse/kube/bin
- - path: /opt/bin/connect
-   permissions: '0755'
-   content: |
-      #!/bin/bash
-      docker exec -it controller /bin/bash
+      export PATH=$PATH:/continuse/bin
