@@ -83,5 +83,5 @@ http://192.168.10.71:4194/containers/    Each Kube Cluster node
 
 If you want to test something examples, start with [Kubernetes examples]
 (https://github.com/GoogleCloudPlatform/kubernetes/blob/master/examples/).
-And I am trying yo make examples. See with [My Examples] (https://github.com/ContinUSE/kubernetes-coreos-cluster/examples).
+And I am trying yo make examples. See with [My Examples] (https://github.com/ContinUSE/kubernetes-coreos-cluster/tree/master/examples).
 
