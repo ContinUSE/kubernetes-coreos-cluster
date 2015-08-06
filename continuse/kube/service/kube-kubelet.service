@@ -1,0 +1,15 @@
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+Requires=flanneld.service
+After=flanneld.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/continuse/kube/bin/chk_master.sh kubelet ${COREOS_PUBLIC_IPV4}
+Restart=always
+RestartSec=10
+
+[X-Fleet]
+Global=true
+MachineMetadata=role=kube
