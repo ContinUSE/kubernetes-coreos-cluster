@@ -54,4 +54,4 @@ write_files:
    permissions: '0644'
    content: |
       #!/bin/bash
-      export PATH=$PATH:/continuse/bin
+      export PATH=$PATH:/continuse/kube/bin
