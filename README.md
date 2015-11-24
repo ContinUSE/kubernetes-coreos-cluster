@@ -40,8 +40,8 @@ $ vagrant ssh controller-01
 
 On controller-01
 $ cd /continuse/kube/bin
-$ wget https://github.com/ContinUSE/kubernetes-coreos-cluster/releases/download/v1.0.1/kube_1.0.1.tar
-$ tar xvfz kube_1.0.1.tar
+$ wget https://github.com/ContinUSE/kubernetes-coreos-cluster/releases/download/v1.1.2/kube_1.1.2.tgz
+$ tar xvfz kube_1.1.2.tgz
 ```
 
 ### Make Service Account Key file
@@ -63,6 +63,8 @@ $ fleetctl start kube-proxy.service
 
 ### Kubernetes Service for GUI Interface
 ```
+$ cd /continuse/kube/examples/kube-ui
+$ kubectl create -f kube-system.yaml
 $ kubectl create -f kube-ui-rc.yaml --namespace=kube-system
 $ kubectl create -f kube-ui-svc.yaml --namespace=kube-system
 ```
